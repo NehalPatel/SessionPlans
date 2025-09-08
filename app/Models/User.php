@@ -45,4 +45,33 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        $permissionsArray = [];
+
+        foreach ($this->roles as $role) {
+            foreach ($role->permissions as $singlePermission) {
+                $permissionsArray[] = $singlePermission->name;
+            }
+        }
+
+        return collect($permissionsArray)->unique()->contains($permission);
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->roles()->where('name', $role)->exists();
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // return true; //TODO: fix this with varified user
+        return str_ends_with($this->email, '@gmail.com') && $this->hasVerifiedEmail();
+    }
 }
