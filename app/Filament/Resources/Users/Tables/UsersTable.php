@@ -10,6 +10,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class UsersTable
 {
@@ -45,12 +46,15 @@ class UsersTable
                     ->preload(),
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()
+                    ->hidden(!Auth::user()->hasPermission('user_edit')),
+                DeleteAction::make()
+                    ->hidden(!Auth::user()->hasPermission('user_delete')),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->hidden(!Auth::user()->hasPermission('user_delete')),
                 ]),
             ]);
     }
