@@ -8,6 +8,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class UsersTable
@@ -26,6 +27,8 @@ class UsersTable
                     ->iconColor('secondary')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('roles.name')
+                    ->badge(),
                 TextColumn::make('email_verified_at')
                     ->label('Email Verified At')
                     ->dateTime()
@@ -37,7 +40,9 @@ class UsersTable
                     ->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('role')
+                    ->relationship('roles', 'name')
+                    ->preload(),
             ])
             ->recordActions([
                 EditAction::make(),
