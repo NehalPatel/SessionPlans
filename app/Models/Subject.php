@@ -16,4 +16,9 @@ class Subject extends Model
     {
         return $this->belongsTo(Stream::class);
     }
+
+    public function lectures(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Lecture::class);
+    }
 }
